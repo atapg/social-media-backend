@@ -94,7 +94,37 @@ const followController = async (req, res) => {
 	}
 }
 
+const getFollowersController = async (req, res) => {
+	// TODO Add pagination too
+
+	try {
+		const users = await FollowModel.find({
+			followed: req.authenticatedUser._id,
+		}).populate('follower')
+
+		successMessage(res, undefined, users)
+	} catch (err) {
+		errorMessage(res)
+	}
+}
+
+const getFollowingsController = async (req, res) => {
+	// TODO Add pagination too
+
+	try {
+		const users = await FollowModel.find({
+			follower: req.authenticatedUser._id,
+		}).populate('followed')
+
+		successMessage(res, undefined, users)
+	} catch (err) {
+		errorMessage(res)
+	}
+}
+
 module.exports = {
 	followController,
 	userInfoController,
+	getFollowersController,
+	getFollowingsController,
 }

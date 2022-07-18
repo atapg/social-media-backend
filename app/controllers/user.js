@@ -29,7 +29,7 @@ const registerController = async (req, res) => {
 			errorMessage(res, 'error')
 		}
 	} catch (err) {
-		errorMessage(res, err)
+		errorMessage(res, 'Something Went Wrong')
 	}
 }
 
@@ -49,12 +49,12 @@ const authenticateController = async (req, res) => {
 
 			user.token = generateToken(user._id)
 
-			return successMessage(res, 'Authenticated Successfully', user)
+			return successMessage(res, 'User Authenticated Successfully', user)
 		} else {
 			errorMessage(res, 'error')
 		}
 	} catch (err) {
-		errorMessage(res, err)
+		errorMessage(res, 'Something Went Wrong')
 	}
 }
 

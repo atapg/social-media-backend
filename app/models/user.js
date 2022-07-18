@@ -28,6 +28,10 @@ const userSchema = new Schema(
 			required: true,
 			min: 8,
 		},
+		isPrivate: {
+			type: Boolean,
+			default: false,
+		},
 		profilePicture: {
 			type: String,
 			default: '',

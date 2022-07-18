@@ -98,7 +98,7 @@ const editPostController = async (req, res) => {
 		if (post) {
 			successMessage(res, 'Post Updated Successfully', post)
 		} else {
-			errorMessage(res)
+			errorMessage(res, 'Post Not Found')
 		}
 	} catch (err) {
 		errorMessage(res)

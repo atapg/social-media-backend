@@ -16,10 +16,9 @@ const followController = async (req, res) => {
 
 	//TODO Add private functionality later
 	try {
-		const hasAlreadyFollowed = await FollowModel.findOne(
-			{ follower: req.authenticatedUser._id },
-			{ followed: userId },
-		)
+		const hasAlreadyFollowed = await FollowModel.findOne({
+			$and: [{ follower: req.authenticatedUser._id }, { followed: userId }],
+		})
 
 		if (hasAlreadyFollowed) {
 			// Then Unfollow Him

@@ -58,12 +58,7 @@ const authenticateController = async (req, res) => {
 	}
 }
 
-const userInfoController = async (req, res) => {
-	return successMessage(res, null, req.authenticatedUser)
-}
-
 module.exports = {
 	registerController,
 	authenticateController,
-	userInfoController,
 }

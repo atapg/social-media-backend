@@ -10,13 +10,14 @@ const PORT = process.env.PORT || 8585
 
 // Settings
 app.use(bodyParser.json())
+// TODO add cors
 
 // Middlewares
 
 // Routes
 app.use('/api/user', require('./app/routes/user'))
 app.use('/api/post', require('./app/routes/post'))
-app.use('/api/x-user', require('./app/routes/follow'))
+app.use('/api/x-user', require('./app/routes/x-user'))
 
 // Connect to mongoDB
 require('./app/config/mongodb')

@@ -3,6 +3,10 @@ const UserModel = require('../models/user')
 
 const { errorMessage, successMessage } = require('../utils/response')
 
+const userInfoController = async (req, res) => {
+	return successMessage(res, null, req.authenticatedUser)
+}
+
 const followController = async (req, res) => {
 	const { userId } = req.body
 
@@ -92,4 +96,5 @@ const followController = async (req, res) => {
 
 module.exports = {
 	followController,
+	userInfoController,
 }

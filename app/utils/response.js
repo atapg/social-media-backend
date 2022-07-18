@@ -1,4 +1,4 @@
-const success = (res, message, data = [], code = 200) => {
+const success = (res, message = 'Successful', data = [], code = 200) => {
 	res.status(code).json({ data, message })
 }
 

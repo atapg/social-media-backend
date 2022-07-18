@@ -10,12 +10,14 @@ const {
 	getPostByIdController,
 } = require('../controllers/post')
 
+router.use(authMiddleware)
+
 router
 	.route('/')
-	.post(authMiddleware, createPostController)
+	.post(createPostController)
 	.get(getPostsController)
-	.delete(authMiddleware, deletePostController)
-	.put(authMiddleware, editPostController)
+	.delete(deletePostController)
+	.put(editPostController)
 
 router.get('/:id', getPostByIdController)
 

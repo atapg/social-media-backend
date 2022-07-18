@@ -28,7 +28,15 @@ const createPostController = async (req, res) => {
 	}
 }
 
-const getPostsController = async (req, res) => {}
+const getPostsController = async (req, res) => {
+	try {
+		const posts = await PostModel.find({ creator: req.authenticatedUser._id })
+
+		successMessage(res, 'Successful', posts)
+	} catch (err) {
+		errorMessage(res, err)
+	}
+}
 
 const getPostByIdController = async (req, res) => {}
 

@@ -12,13 +12,12 @@ const {
 
 router.use(authMiddleware)
 
+router.route('/').post(createPostController).get(getPostsController)
+
 router
-	.route('/')
-	.post(createPostController)
-	.get(getPostsController)
+	.route('/:id')
+	.get(getPostByIdController)
 	.delete(deletePostController)
 	.put(editPostController)
-
-router.get('/:id', getPostByIdController)
 
 module.exports = router

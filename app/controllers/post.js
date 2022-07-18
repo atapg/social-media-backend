@@ -16,6 +16,8 @@ const createPostController = async (req, res) => {
 
 		if (req.body.title) {
 			data.title = req.body.title
+		} else {
+			data.title = null
 		}
 
 		const post = await PostModel.create(data)
@@ -34,15 +36,74 @@ const getPostsController = async (req, res) => {
 
 		successMessage(res, 'Successful', posts)
 	} catch (err) {
-		errorMessage(res, err)
+		errorMessage(res)
 	}
 }
 
-const getPostByIdController = async (req, res) => {}
+//TODO Set private functionality after setting follow functionality
+const getPostByIdController = async (req, res) => {
+	const id = req.params.id
 
-const deletePostController = async (req, res) => {}
+	try {
+		const post = await PostModel.findById(id)
 
-const editPostController = async (req, res) => {}
+		if (post) {
+			successMessage(res, undefined, post)
+		}
+	} catch (err) {
+		errorMessage(res)
+	}
+}
+
+const deletePostController = async (req, res) => {
+	const id = req.params.id
+
+	try {
+		const post = await PostModel.findByIdAndDelete(id)
+
+		if (post) {
+			successMessage(res, 'Post Deleted Successfully', post)
+		} else {
+			errorMessage(res, 'Post Not Found')
+		}
+	} catch (err) {
+		errorMessage(res)
+	}
+}
+
+const editPostController = async (req, res) => {
+	const id = req.params.id
+
+	const error = postValidation(req.body)
+
+	if (error) return errorMessage(res, error)
+
+	try {
+		const data = {
+			content: req.body.content,
+			postType: req.body.postType,
+			creator: req.authenticatedUser._id,
+		}
+
+		if (req.body.title) {
+			data.title = req.body.title
+		} else {
+			data.title = null
+		}
+
+		await PostModel.findByIdAndUpdate(id, data)
+
+		const post = await PostModel.findById(id)
+
+		if (post) {
+			successMessage(res, 'Post Updated Successfully', post)
+		} else {
+			errorMessage(res)
+		}
+	} catch (err) {
+		errorMessage(res)
+	}
+}
 
 module.exports = {
 	editPostController,

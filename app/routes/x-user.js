@@ -15,8 +15,11 @@ const authMiddleware = require('../middlewares/authentication')
 router.use(authMiddleware)
 
 router.post('/follow', followController)
+
+//TODO Create PV middleware for like and comment
 router.post('/like', likeController)
 router.route('/comment').post(commentController).delete(deleteCommentController)
+
 router.get('/followers', getFollowersController)
 router.get('/followings', getFollowingsController)
 router.get('/', userInfoController)

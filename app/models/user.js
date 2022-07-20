@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs')
 
 const Schema = mongoose.Schema
 
-// birthday - posts -
 const userSchema = new Schema(
 	{
 		firstName: {
@@ -47,6 +46,14 @@ const userSchema = new Schema(
 			default: 0,
 		},
 		bio: String,
+		birthday: {
+			type: Date,
+			required: true,
+		},
+		posts: {
+			type: Number,
+			default: 0,
+		},
 	},
 	{ timestamps: true },
 )

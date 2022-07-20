@@ -12,6 +12,8 @@ const {
 
 router.use(authMiddleware)
 
+//TODO In create and delete post modify user posts count
+
 router.route('/').post(createPostController).get(getPostsController)
 
 router

@@ -11,12 +11,6 @@ const postSchema = new Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'user',
 		},
-		likes: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'user',
-			},
-		],
 		likesCount: {
 			type: Number,
 			default: 0,

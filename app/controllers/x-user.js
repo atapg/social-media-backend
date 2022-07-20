@@ -218,7 +218,7 @@ const deleteCommentController = async (req, res) => {
 		if (comment) {
 			successMessage(res, 'Comment Deleted Successfully', comment)
 		} else {
-			errorMessage(res, 'You Cannot Delete Others Comments')
+			errorMessage(res, 'Comment Not Found')
 		}
 	} catch (err) {
 		errorMessage(res)

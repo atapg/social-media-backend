@@ -7,6 +7,7 @@ const schema = Joi.object().keys({
 	username: Joi.string().required(),
 	email: Joi.string().required(),
 	password: Joi.string().required().min(8),
+	birthday: Joi.date().required(),
 })
 
 module.exports = (data) => validatorErrorMessage(schema, data)

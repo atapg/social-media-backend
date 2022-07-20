@@ -1,4 +1,5 @@
 const PostModel = require('../models/post')
+const UserModel = require('../models/user')
 const postValidation = require('../validations/post')
 const { errorMessage, successMessage } = require('../utils/response')
 
@@ -23,6 +24,10 @@ const createPostController = async (req, res) => {
 		const post = await PostModel.create(data)
 
 		if (post) {
+			await UserModel.findByIdAndUpdate(req.authenticatedUser._id, {
+				$inc: { posts: 1 },
+			})
+
 			return successMessage(res, 'Post Created Successfully', post)
 		}
 	} catch (err) {
@@ -62,6 +67,10 @@ const deletePostController = async (req, res) => {
 		const post = await PostModel.findByIdAndDelete(id)
 
 		if (post) {
+			await UserModel.findByIdAndUpdate(req.authenticatedUser._id, {
+				$inc: { posts: -1 },
+			})
+
 			successMessage(res, 'Post Deleted Successfully', post)
 		} else {
 			errorMessage(res, 'Post Not Found')

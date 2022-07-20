@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 
 const Schema = mongoose.Schema
 
+// birthday - posts -
 const userSchema = new Schema(
 	{
 		firstName: {

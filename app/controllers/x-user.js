@@ -2,6 +2,7 @@ const FollowModel = require('../models/follow')
 const UserModel = require('../models/user')
 const LikeModel = require('../models/like')
 const PostModel = require('../models/post')
+const CommentModel = require('../models/comment')
 
 const { errorMessage, successMessage } = require('../utils/response')
 
@@ -124,6 +125,7 @@ const getFollowingsController = async (req, res) => {
 	}
 }
 
+// TODO add pv account like filter
 const likeController = async (req, res) => {
 	const { postId } = req.body
 
@@ -166,10 +168,57 @@ const likeController = async (req, res) => {
 			})
 
 			if (dislikePost && decreasePostLikes) {
-				successMessage(res)
+				successMessage(res, 'Disliked Successfully')
 			} else {
 				errorMessage(res)
 			}
+		}
+	} catch (err) {
+		errorMessage(res)
+	}
+}
+
+const commentController = async (req, res) => {
+	const { comment, postId } = req.body
+
+	if (!comment || !postId) {
+		return errorMessage(res, 'postId or comment Required')
+	}
+
+	try {
+		const createComment = await CommentModel.create({
+			postId,
+			comment,
+			userId: req.authenticatedUser._id,
+		})
+
+		if (!createComment) {
+			return errorMessage(res)
+		} else {
+			successMessage(res, undefined, createComment)
+		}
+	} catch (err) {
+		console.log(err)
+		errorMessage(res)
+	}
+}
+
+const deleteCommentController = async (req, res) => {
+	const { postId } = req.body
+
+	if (!postId) {
+		return errorMessage(res, 'postId Required')
+	}
+
+	try {
+		const comment = await CommentModel.findOneAndDelete({
+			$and: [{ postId }, { userId: req.authenticatedUser._id }],
+		})
+
+		if (comment) {
+			successMessage(res, 'Comment Deleted Successfully', comment)
+		} else {
+			errorMessage(res, 'You Cannot Delete Others Comments')
 		}
 	} catch (err) {
 		errorMessage(res)
@@ -182,4 +231,6 @@ module.exports = {
 	getFollowersController,
 	getFollowingsController,
 	likeController,
+	commentController,
+	deleteCommentController,
 }

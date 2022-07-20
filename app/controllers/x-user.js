@@ -5,6 +5,7 @@ const PostModel = require('../models/post')
 const CommentModel = require('../models/comment')
 
 const { errorMessage, successMessage } = require('../utils/response')
+const { likePermission } = require('../middlewares/pv')
 
 const userInfoController = async (req, res) => {
 	return successMessage(res, null, req.authenticatedUser)
@@ -131,6 +132,13 @@ const likeController = async (req, res) => {
 
 	if (!postId) {
 		return errorMessage(res, 'postId Required')
+	}
+
+	// Check if user has permission to like this post
+	try {
+		await likePermission(req, res, postId)
+	} catch (err) {
+		return errorMessage(res, 'No Permission')
 	}
 
 	try {

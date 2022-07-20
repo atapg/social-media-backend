@@ -2,7 +2,7 @@ const UserModel = require('../models/user')
 const FollowModel = require('../models/follow')
 const PostModel = require('../models/post')
 
-const likePermission = async (req, res, postId) => {
+const postPermission = async (req, res, postId) => {
 	const post = await PostModel.findById(postId)
 
 	if (!post) {
@@ -44,4 +44,4 @@ const isPrivateAccount = async (id) => {
 	} else return !!user.isPrivate
 }
 
-module.exports = { likePermission }
+module.exports = { postPermission }

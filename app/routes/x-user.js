@@ -17,7 +17,7 @@ router.use(authMiddleware)
 // Follow / Unfollow
 router.post('/follow', followController)
 
-//TODO Create PV middleware for like and comment
+//TODO Create PV middleware for  comment
 //
 // Like / Dislike
 router.post('/like', likeController)

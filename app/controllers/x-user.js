@@ -225,6 +225,13 @@ const deleteCommentController = async (req, res) => {
 		return errorMessage(res, 'postId Required')
 	}
 
+	// Check if user has permission to like this post
+	try {
+		await postPermission(req, res, postId)
+	} catch (err) {
+		return errorMessage(res, 'No Permission')
+	}
+
 	try {
 		const comment = await CommentModel.findOneAndDelete({
 			$and: [{ postId }, { userId: req.authenticatedUser._id }],

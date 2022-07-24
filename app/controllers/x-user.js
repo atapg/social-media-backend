@@ -134,12 +134,12 @@ const likeController = async (req, res) => {
 		return errorMessage(res, 'postId Required')
 	}
 
-	// Check if user has permission to like this post
-	try {
-		await postPermission(req, res, postId)
-	} catch (err) {
-		return errorMessage(res, 'No Permission')
-	}
+	// // Check if user has permission to like this post
+	// try {
+	// 	await postPermission(req, res, postId)
+	// } catch (err) {
+	// 	return errorMessage(res, 'No Permission')
+	// }
 
 	try {
 		// Check if user has already liked this post or not
@@ -193,12 +193,12 @@ const commentController = async (req, res) => {
 		return errorMessage(res, 'postId or comment Required')
 	}
 
-	// Check if user has permission to like this post
-	try {
-		await postPermission(req, res, postId)
-	} catch (err) {
-		return errorMessage(res, 'No Permission')
-	}
+	// // Check if user has permission to like this post
+	// try {
+	// 	await postPermission(req, res, postId)
+	// } catch (err) {
+	// 	return errorMessage(res, 'No Permission')
+	// }
 
 	try {
 		const createComment = await CommentModel.create({
@@ -220,22 +220,21 @@ const commentController = async (req, res) => {
 
 const deleteCommentController = async (req, res) => {
 	const { postId } = req.body
+	const commentId = req.params.id
 
-	if (!postId) {
-		return errorMessage(res, 'postId Required')
+	if (!postId || !commentId) {
+		return errorMessage(res, 'postId Or commentId Required')
 	}
 
-	// Check if user has permission to like this post
-	try {
-		await postPermission(req, res, postId)
-	} catch (err) {
-		return errorMessage(res, 'No Permission')
-	}
+	// // Check if user has permission to like this post
+	// try {
+	// 	await postPermission(req, res, postId)
+	// } catch (err) {
+	// 	return errorMessage(res, 'No Permission')
+	// }
 
 	try {
-		const comment = await CommentModel.findOneAndDelete({
-			$and: [{ postId }, { userId: req.authenticatedUser._id }],
-		})
+		const comment = await CommentModel.findByIdAndDelete(commentId)
 
 		if (comment) {
 			successMessage(res, 'Comment Deleted Successfully', comment)

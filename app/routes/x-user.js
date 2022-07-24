@@ -11,19 +11,19 @@ const {
 } = require('../controllers/x-user')
 
 const authMiddleware = require('../middlewares/authentication')
+const pvMiddleware = require('../middlewares/pv')
 
 router.use(authMiddleware)
 
 // Follow / Unfollow
-router.post('/follow', followController)
+router.post('/follow', pvMiddleware, followController)
 
-//TODO Create PV middleware for  comment
-//
 // Like / Dislike
-router.post('/like', likeController)
+router.post('/like', pvMiddleware, likeController)
 
 // Comment
-router.route('/comment').post(commentController).delete(deleteCommentController)
+router.post('/comment', pvMiddleware, commentController)
+router.delete('/comment/:id', pvMiddleware, deleteCommentController)
 
 // Get followers and followings
 router.get('/followers', getFollowersController)

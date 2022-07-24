@@ -1,25 +1,38 @@
 const UserModel = require('../models/user')
 const FollowModel = require('../models/follow')
 const PostModel = require('../models/post')
+const { errorMessage } = require('../utils/response')
 
-const postPermission = async (req, res, postId) => {
-	const post = await PostModel.findById(postId)
+module.exports = async (req, res, next) => {
+	const { postId, userId } = req.body
 
-	if (!post) {
-		throw new Error('Post not found')
-	}
+	if (postId) {
+		const post = await PostModel.findById(postId)
 
-	const isPv = await isPrivateAccount(post.creator)
-
-	if (isPv) {
-		const areFollowing = await areFollowers(
-			post.creator,
-			req.authenticatedUser._id,
-		)
-
-		if (!areFollowing) {
-			throw new Error('They are not followers')
+		if (!post) {
+			return errorMessage(res, 'Not Found')
 		}
+
+		const isPv = await isPrivateAccount(post.creator)
+
+		if (isPv) {
+			const areFollowing = await areFollowers(
+				post.creator,
+				req.authenticatedUser._id,
+			)
+
+			if (!areFollowing) {
+				return errorMessage(res, "The User's Account Is Private")
+			}
+		}
+
+		next()
+	} else if (userId) {
+		// this is for users follow req
+
+		next()
+	} else {
+		return errorMessage(res, 'Access Denied')
 	}
 }
 
@@ -43,5 +56,3 @@ const isPrivateAccount = async (id) => {
 		return false
 	} else return !!user.isPrivate
 }
-
-module.exports = { postPermission }

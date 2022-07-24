@@ -2,17 +2,15 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const followSchema = new Schema(
+const requestSchema = new Schema(
 	{
-		follower: {
+		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'user',
-			required: true,
 		},
-		followed: {
+		requestedUserId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'user',
-			required: true,
 		},
 	},
 	{
@@ -20,4 +18,4 @@ const followSchema = new Schema(
 	},
 )
 
-module.exports = mongoose.model('follow', followSchema)
+module.exports = mongoose.model('request', requestSchema)

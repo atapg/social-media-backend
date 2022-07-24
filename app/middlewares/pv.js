@@ -4,7 +4,7 @@ const PostModel = require('../models/post')
 const { errorMessage } = require('../utils/response')
 
 module.exports = async (req, res, next) => {
-	const { postId } = req.body
+	const { postId, userId } = req.body
 
 	if (postId) {
 		const post = await PostModel.findById(postId)
@@ -20,6 +20,18 @@ module.exports = async (req, res, next) => {
 				post.creator,
 				req.authenticatedUser._id,
 			)
+
+			if (!areFollowing) {
+				return errorMessage(res, "The User's Account Is Private")
+			}
+		}
+
+		next()
+	} else if (userId) {
+		const isPv = await isPrivateAccount(userId)
+
+		if (isPv) {
+			const areFollowing = await areFollowers(userId, req.authenticatedUser._id)
 
 			if (!areFollowing) {
 				return errorMessage(res, "The User's Account Is Private")

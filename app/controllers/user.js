@@ -58,7 +58,17 @@ const authenticateController = async (req, res) => {
 	}
 }
 
-const getUserPublicInfo = async (req, res) => {}
+const getUserPublicInfo = async (req, res) => {
+	const user = await UserModel.findById(req.params.id).select(
+		'-password -email',
+	)
+
+	if (!user) {
+		return errorMessage(res, 'User Not Found')
+	}
+
+	successMessage(res, undefined, user)
+}
 
 module.exports = {
 	registerController,

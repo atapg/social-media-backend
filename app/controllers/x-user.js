@@ -353,7 +353,7 @@ const getUserInfoController = async (req, res) => {
 	}
 
 	// Check if user's account is PV, if yes then check if they are following each other
-	const user = await UserModel.findById(id).select('-password')
+	const user = await UserModel.findById(id).select('-password -email')
 
 	if (!user) return errorMessage(res)
 
@@ -373,6 +373,16 @@ const getUserInfoController = async (req, res) => {
 	}
 }
 
+const getOtherUsersPostController = async (req, res) => {
+	const { userId } = req.body
+
+	const posts = await PostModel.find({
+		creator: userId,
+	})
+
+	successMessage(res, undefined, posts)
+}
+
 module.exports = {
 	followController,
 	getYourOwnInfoController,
@@ -383,4 +393,5 @@ module.exports = {
 	deleteCommentController,
 	requestController,
 	getUserInfoController,
+	getOtherUsersPostController,
 }

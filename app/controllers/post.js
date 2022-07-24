@@ -45,16 +45,26 @@ const getPostsController = async (req, res) => {
 	}
 }
 
-//TODO Set private functionality after setting follow functionality
 const getPostByIdController = async (req, res) => {
 	const id = req.params.id
 
 	try {
-		const post = await PostModel.findById(id)
+		const post = await PostModel.findOne({
+			$and: [
+				{
+					_id: id,
+				},
+				{
+					creator: req.authenticatedUser._id,
+				},
+			],
+		})
 
-		if (post) {
-			successMessage(res, undefined, post)
+		if (!post) {
+			return errorMessage(res, 'Post Not Found')
 		}
+
+		successMessage(res, undefined, post)
 	} catch (err) {
 		errorMessage(res)
 	}

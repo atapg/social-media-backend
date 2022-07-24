@@ -10,6 +10,7 @@ const {
 	deleteCommentController,
 	requestController,
 	getUserInfoController,
+	getOtherUsersPostController,
 } = require('../controllers/x-user')
 
 const authMiddleware = require('../middlewares/authentication')
@@ -39,5 +40,8 @@ router.get('/', getYourOwnInfoController)
 
 // Get user info - like prof
 router.get('/:id', authMiddleware, getUserInfoController)
+
+// Get Other Users Posts
+router.post('/posts', pvMiddleware, getOtherUsersPostController)
 
 module.exports = router

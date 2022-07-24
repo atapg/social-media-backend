@@ -16,7 +16,9 @@ const pvMiddleware = require('../middlewares/pv')
 router.use(authMiddleware)
 
 // Follow / Unfollow
-router.post('/follow', pvMiddleware, followController)
+router.post('/follow', followController)
+
+// Request
 
 // Like / Dislike
 router.post('/like', pvMiddleware, likeController)

@@ -7,10 +7,12 @@ const requestSchema = new Schema(
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'user',
+			required: true,
 		},
 		requestedUserId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'user',
+			required: true,
 		},
 	},
 	{

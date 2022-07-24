@@ -3,9 +3,9 @@ const UserModel = require('../models/user')
 const LikeModel = require('../models/like')
 const PostModel = require('../models/post')
 const CommentModel = require('../models/comment')
+const RequestModel = require('../models/request')
 
 const { errorMessage, successMessage } = require('../utils/response')
-const { postPermission } = require('../middlewares/pv')
 
 const userInfoController = async (req, res) => {
 	return successMessage(res, null, req.authenticatedUser)
@@ -22,8 +22,8 @@ const followController = async (req, res) => {
 		return errorMessage(res, 'You Cannot Follow Yourself')
 	}
 
-	//TODO Add private functionality later
 	try {
+		// Check if they have followed each other already
 		const hasAlreadyFollowed = await FollowModel.findOne({
 			$and: [{ follower: req.authenticatedUser._id }, { followed: userId }],
 		})
@@ -35,7 +35,6 @@ const followController = async (req, res) => {
 			)
 
 			if (!unfollow) {
-				console.log('here')
 				return errorMessage(res)
 			}
 
@@ -62,36 +61,81 @@ const followController = async (req, res) => {
 
 			successMessage(res, 'Unfollowed Successfully')
 		} else {
-			// Else Follow Him
-			const follow = await FollowModel.create({
-				follower: req.authenticatedUser._id,
-				followed: userId,
-			})
+			// Check if the user is PV
+			// If Yes send them request
+			// If not continue
+			const isRequestedIsPv = await UserModel.findById(userId)
 
-			if (!follow) {
-				return errorMessage(res, 'Invalid Credentials')
+			if (!isRequestedIsPv) {
+				return errorMessage(res, 'User Not Found')
 			}
 
-			const user = await UserModel.findByIdAndUpdate(
-				req.authenticatedUser._id,
-				{
-					$inc: { followings: 1 },
-				},
-			)
+			if (isRequestedIsPv.isPrivate) {
+				const hasAlreadyRequested = await RequestModel.findOne({
+					$and: [
+						{ userId: req.authenticatedUser._id },
+						{ requestedUserId: userId },
+					],
+				})
 
-			if (!user) {
-				return errorMessage(res)
+				if (hasAlreadyRequested) {
+					// The User has already requested to follow
+					return successMessage(
+						res,
+						'You Have Already Requested To Follow',
+						hasAlreadyRequested,
+					)
+				} else {
+					// User has not requested to follow so make request
+					// Make follow request here
+					const followRequest = await RequestModel.create({
+						userId: req.authenticatedUser._id,
+						requestedUserId: userId,
+					})
+
+					if (!followRequest) {
+						return errorMessage(res)
+					} else {
+						return successMessage(
+							res,
+							'Requested To Follow Successfully',
+							followRequest,
+						)
+					}
+				}
+			} else {
+				// The Account is not private so be cool do what ever you want
+				// Follow Him
+				const follow = await FollowModel.create({
+					follower: req.authenticatedUser._id,
+					followed: userId,
+				})
+
+				if (!follow) {
+					return errorMessage(res, 'Invalid Credentials')
+				}
+
+				const user = await UserModel.findByIdAndUpdate(
+					req.authenticatedUser._id,
+					{
+						$inc: { followings: 1 },
+					},
+				)
+
+				if (!user) {
+					return errorMessage(res)
+				}
+
+				const targetUser = await UserModel.findByIdAndUpdate(userId, {
+					$inc: { followers: 1 },
+				})
+
+				if (!targetUser) {
+					return errorMessage(res)
+				}
+
+				successMessage(res, 'Followed Successfully')
 			}
-
-			const targetUser = await UserModel.findByIdAndUpdate(userId, {
-				$inc: { followers: 1 },
-			})
-
-			if (!targetUser) {
-				return errorMessage(res)
-			}
-
-			successMessage(res, 'Followed Successfully')
 		}
 	} catch (err) {
 		errorMessage(res)
@@ -126,7 +170,6 @@ const getFollowingsController = async (req, res) => {
 	}
 }
 
-// TODO add pv account like filter
 const likeController = async (req, res) => {
 	const { postId } = req.body
 

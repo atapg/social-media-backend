@@ -11,6 +11,7 @@ const {
 	requestController,
 	getUserInfoController,
 	getOtherUsersPostController,
+	getOtherUsersPostByIdController,
 } = require('../controllers/x-user')
 
 const authMiddleware = require('../middlewares/authentication')
@@ -43,5 +44,6 @@ router.get('/:id', authMiddleware, getUserInfoController)
 
 // Get Other Users Posts
 router.post('/posts', pvMiddleware, getOtherUsersPostController)
+router.post('/post/:id', pvMiddleware, getOtherUsersPostByIdController)
 
 module.exports = router

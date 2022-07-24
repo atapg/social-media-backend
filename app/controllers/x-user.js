@@ -383,6 +383,16 @@ const getOtherUsersPostController = async (req, res) => {
 	successMessage(res, undefined, posts)
 }
 
+const getOtherUsersPostByIdController = async (req, res) => {
+	const { id } = req.params
+
+	if (!id) return errorMessage(res, 'id Is Not Defined')
+
+	const post = await PostModel.findById(id)
+
+	successMessage(res, undefined, post)
+}
+
 module.exports = {
 	followController,
 	getYourOwnInfoController,
@@ -394,4 +404,5 @@ module.exports = {
 	requestController,
 	getUserInfoController,
 	getOtherUsersPostController,
+	getOtherUsersPostByIdController,
 }

@@ -8,6 +8,7 @@ const {
 	likeController,
 	commentController,
 	deleteCommentController,
+	requestController,
 } = require('../controllers/x-user')
 
 const authMiddleware = require('../middlewares/authentication')
@@ -19,6 +20,7 @@ router.use(authMiddleware)
 router.post('/follow', followController)
 
 // Request
+router.post('/request', authMiddleware, requestController)
 
 // Like / Dislike
 router.post('/like', pvMiddleware, likeController)

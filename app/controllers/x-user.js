@@ -289,6 +289,62 @@ const deleteCommentController = async (req, res) => {
 	}
 }
 
+const requestController = async (req, res) => {
+	const { status, userId } = req.body
+
+	if (!status || !userId) {
+		return errorMessage(res, 'userId or status Are Required')
+	}
+
+	if (status === 'accept') {
+		// Accept the request
+		try {
+			const request = await RequestModel.findOne({
+				$and: [{ userId }, { requestedUserId: req.authenticatedUser._id }],
+			})
+
+			if (!request) {
+				return errorMessage(res, 'No Request Has Been Found')
+			}
+
+			// No duplicate follow
+			const duplicateFollow = await FollowModel.findOne({
+				$and: [{ follower: userId }, { followed: req.authenticatedUser._id }],
+			})
+
+			if (!duplicateFollow) {
+				// Add him to you followers
+				const follow = await FollowModel.create({
+					follower: userId,
+					followed: req.authenticatedUser._id,
+				})
+
+				if (!follow) {
+					return errorMessage(res)
+				}
+
+				// Delete Request
+				const deleteReq = await RequestModel.findByIdAndDelete(request._id)
+
+				if (!deleteReq) {
+					return errorMessage(res)
+				}
+
+				return successMessage(res, 'Request Accepted Successfully')
+			} else {
+				// Already Users are in the follows collection
+				return successMessage(res, 'Request Accepted Successfully')
+			}
+		} catch (err) {
+			return errorMessage(res)
+		}
+	} else if (status === 'decline') {
+		// Decline the request
+	} else {
+		return errorMessage(res, 'status Data Is Not Valid')
+	}
+}
+
 module.exports = {
 	followController,
 	userInfoController,
@@ -297,4 +353,5 @@ module.exports = {
 	likeController,
 	commentController,
 	deleteCommentController,
+	requestController,
 }

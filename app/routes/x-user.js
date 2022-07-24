@@ -12,6 +12,7 @@ const {
 	getUserInfoController,
 	getOtherUsersPostController,
 	getOtherUsersPostByIdController,
+	getRequestsController,
 } = require('../controllers/x-user')
 
 const authMiddleware = require('../middlewares/authentication')
@@ -22,8 +23,11 @@ router.use(authMiddleware)
 // Follow / Unfollow
 router.post('/follow', followController)
 
-// Request
-router.post('/request', authMiddleware, requestController)
+// Accept or Decline a Request
+router.post('/requests', authMiddleware, requestController)
+
+// Get list of requests
+router.get('/requests', authMiddleware, getRequestsController)
 
 // Like / Dislike
 router.post('/like', pvMiddleware, likeController)

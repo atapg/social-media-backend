@@ -393,6 +393,15 @@ const getOtherUsersPostByIdController = async (req, res) => {
 	successMessage(res, undefined, post)
 }
 
+// TODO add pagination
+const getRequestsController = async (req, res) => {
+	const requests = await RequestModel.find({
+		requestedUserId: req.authenticatedUser._id,
+	}).populate('userId', 'username profilePicture bio firstName lastName')
+
+	successMessage(res, undefined, requests)
+}
+
 module.exports = {
 	followController,
 	getYourOwnInfoController,
@@ -405,4 +414,5 @@ module.exports = {
 	getUserInfoController,
 	getOtherUsersPostController,
 	getOtherUsersPostByIdController,
+	getRequestsController,
 }

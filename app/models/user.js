@@ -45,7 +45,9 @@ const userSchema = new Schema(
 			type: Number,
 			default: 0,
 		},
-		bio: String,
+		bio: {
+			type: String,
+		},
 		birthday: {
 			type: Date,
 			required: true,

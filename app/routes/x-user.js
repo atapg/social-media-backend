@@ -2,13 +2,14 @@ const router = require('express').Router()
 
 const {
 	followController,
-	userInfoController,
+	getYourOwnInfoController,
 	getFollowersController,
 	getFollowingsController,
 	likeController,
-	commentController,
+	createCommentController,
 	deleteCommentController,
 	requestController,
+	getUserInfoController,
 } = require('../controllers/x-user')
 
 const authMiddleware = require('../middlewares/authentication')
@@ -26,14 +27,17 @@ router.post('/request', authMiddleware, requestController)
 router.post('/like', pvMiddleware, likeController)
 
 // Comment
-router.post('/comment', pvMiddleware, commentController)
+router.post('/comment', pvMiddleware, createCommentController)
 router.delete('/comment/:id', pvMiddleware, deleteCommentController)
 
 // Get followers and followings
 router.get('/followers', getFollowersController)
 router.get('/followings', getFollowingsController)
 
-// Get user info
-router.get('/', userInfoController)
+// Get user info (yourself)
+router.get('/', getYourOwnInfoController)
+
+// Get user info - like prof
+router.get('/:id', authMiddleware, getUserInfoController)
 
 module.exports = router

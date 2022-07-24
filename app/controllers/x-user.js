@@ -7,7 +7,7 @@ const RequestModel = require('../models/request')
 
 const { errorMessage, successMessage } = require('../utils/response')
 
-const userInfoController = async (req, res) => {
+const getYourOwnInfoController = async (req, res) => {
 	return successMessage(res, null, req.authenticatedUser)
 }
 
@@ -229,7 +229,7 @@ const likeController = async (req, res) => {
 	}
 }
 
-const commentController = async (req, res) => {
+const createCommentController = async (req, res) => {
 	const { comment, postId } = req.body
 
 	if (!comment || !postId) {
@@ -345,13 +345,42 @@ const requestController = async (req, res) => {
 	}
 }
 
+const getUserInfoController = async (req, res) => {
+	const { id } = req.params
+
+	if (id === req.authenticatedUser._id) {
+		return errorMessage(res)
+	}
+
+	// Check if user's account is PV, if yes then check if they are following each other
+	const user = await UserModel.findById(id).select('-password')
+
+	if (!user) return errorMessage(res)
+
+	if (user.isPrivate) {
+		// Check if they are following each other
+		const isFollowing = await FollowModel.findOne({
+			$and: [{ follower: id }, { followed: req.authenticatedUser._id }],
+		})
+
+		if (!isFollowing) {
+			return errorMessage(res, 'You Are Not Following The User')
+		}
+
+		successMessage(res, undefined, user)
+	} else {
+		successMessage(res, undefined, user)
+	}
+}
+
 module.exports = {
 	followController,
-	userInfoController,
+	getYourOwnInfoController,
 	getFollowersController,
 	getFollowingsController,
 	likeController,
-	commentController,
+	createCommentController,
 	deleteCommentController,
 	requestController,
+	getUserInfoController,
 }

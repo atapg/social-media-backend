@@ -58,7 +58,10 @@ const authenticateController = async (req, res) => {
 	}
 }
 
+const getUserPublicInfo = async (req, res) => {}
+
 module.exports = {
 	registerController,
 	authenticateController,
+	getUserPublicInfo,
 }

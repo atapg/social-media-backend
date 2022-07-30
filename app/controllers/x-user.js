@@ -143,26 +143,48 @@ const followController = async (req, res) => {
 }
 
 const getFollowersController = async (req, res) => {
-	// TODO Add pagination too
+	let page = Number(req.query.page)
+	let limit = Number(req.query.limit)
+
+	if (!page) page = 1
+	if (!limit) limit = 10
 
 	try {
+		const startIndex = (Number(page) - 1) * limit
+
 		const users = await FollowModel.find({
 			followed: req.authenticatedUser._id,
-		}).populate('follower')
+		})
+			.populate('follower', '-password -email')
+			.limit(limit)
+			.skip(startIndex)
 
-		successMessage(res, undefined, users)
+		successMessage(res, undefined, {
+			users,
+			page,
+			limit,
+		})
 	} catch (err) {
 		errorMessage(res)
 	}
 }
 
 const getFollowingsController = async (req, res) => {
-	// TODO Add pagination too
+	let page = Number(req.query.page)
+	let limit = Number(req.query.limit)
+
+	if (!page) page = 1
+	if (!limit) limit = 10
 
 	try {
+		const startIndex = (Number(page) - 1) * limit
+
 		const users = await FollowModel.find({
 			follower: req.authenticatedUser._id,
-		}).populate('followed')
+		})
+			.populate('followed', '-password -email')
+			.limit(limit)
+			.skip(startIndex)
 
 		successMessage(res, undefined, users)
 	} catch (err) {
@@ -393,13 +415,27 @@ const getOtherUsersPostByIdController = async (req, res) => {
 	successMessage(res, undefined, post)
 }
 
-// TODO add pagination
 const getRequestsController = async (req, res) => {
-	const requests = await RequestModel.find({
-		requestedUserId: req.authenticatedUser._id,
-	}).populate('userId', 'username profilePicture bio firstName lastName')
+	let page = Number(req.query.page)
+	let limit = Number(req.query.limit)
 
-	successMessage(res, undefined, requests)
+	if (!page) page = 1
+	if (!limit) limit = 10
+
+	try {
+		const startIndex = (Number(page) - 1) * limit
+
+		const requests = await RequestModel.find({
+			requestedUserId: req.authenticatedUser._id,
+		})
+			.populate('userId', 'username profilePicture bio firstName lastName')
+			.limit(limit)
+			.skip(startIndex)
+
+		successMessage(res, undefined, requests)
+	} catch (err) {
+		errorMessage(res)
+	}
 }
 
 module.exports = {

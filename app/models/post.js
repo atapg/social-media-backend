@@ -10,6 +10,7 @@ const postSchema = new Schema(
 		creator: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'user',
+			required: true,
 		},
 		likesCount: {
 			type: Number,
@@ -32,6 +33,9 @@ const postSchema = new Schema(
 				},
 			],
 			maxlength: 3,
+		},
+		location: {
+			type: String,
 		},
 	},
 	{ timestamps: true },

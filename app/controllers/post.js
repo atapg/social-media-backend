@@ -13,6 +13,7 @@ const createPostController = async (req, res) => {
 			content: req.body.content,
 			postType: req.body.postType,
 			creator: req.authenticatedUser._id,
+			location: req.body.location ? req.body.location : null,
 		}
 
 		if (req.body.title) {
@@ -102,6 +103,7 @@ const editPostController = async (req, res) => {
 			content: req.body.content,
 			postType: req.body.postType,
 			creator: req.authenticatedUser._id,
+			location: req.body.location ? req.body.location : null,
 		}
 
 		if (req.body.title) {

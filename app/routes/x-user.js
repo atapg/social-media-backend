@@ -30,11 +30,16 @@ router.post('/requests', authMiddleware, requestController)
 router.get('/requests', authMiddleware, getRequestsController)
 
 // Like / Dislike
-router.post('/like', pvMiddleware, likeController)
+router.post('/like', authMiddleware, pvMiddleware, likeController)
 
 // Comment
-router.post('/comment', pvMiddleware, createCommentController)
-router.delete('/comment/:id', pvMiddleware, deleteCommentController)
+router.post('/comment', authMiddleware, pvMiddleware, createCommentController)
+router.delete(
+	'/comment/:id',
+	authMiddleware,
+	pvMiddleware,
+	deleteCommentController,
+)
 
 // Get followers and followings
 router.get('/followers', getFollowersController)
@@ -47,7 +52,12 @@ router.get('/', getYourOwnInfoController)
 router.get('/:id', authMiddleware, getUserInfoController)
 
 // Get Other Users Posts
-router.post('/posts', pvMiddleware, getOtherUsersPostController)
-router.post('/post/:id', pvMiddleware, getOtherUsersPostByIdController)
+router.post('/posts', authMiddleware, pvMiddleware, getOtherUsersPostController)
+router.post(
+	'/post/:id',
+	authMiddleware,
+	pvMiddleware,
+	getOtherUsersPostByIdController,
+)
 
 module.exports = router

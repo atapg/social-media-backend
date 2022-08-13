@@ -18,6 +18,7 @@ app.use(bodyParser.json())
 app.use('/api/user', require('./app/routes/user'))
 app.use('/api/post', require('./app/routes/post'))
 app.use('/api/x-user', require('./app/routes/x-user'))
+app.use('/api/files', require('./app/routes/file'))
 
 // Connect to mongoDB
 require('./app/config/mongodb')

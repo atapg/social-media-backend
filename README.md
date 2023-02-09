@@ -1,0 +1,3 @@
+# social-media-backend
+A social media backend where users can post images and texts with the image uploading functionality, send follow request to each other, accept or decline requests, 
+see each others post, make their accounts private or public and so on ...
